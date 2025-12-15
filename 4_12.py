@@ -15,30 +15,32 @@ def start(message):
     # Создаем inline-клавиатуру
     markup = types.InlineKeyboardMarkup()
 
-    # Создаем кнопки
+    # Создаем кнопки и добавляем
     but1 = types.InlineKeyboardButton(
         '🌍 Фото Земли со спутников',
         callback_data='photo of the Earth'
     )
+    markup.add(but1)
     but2 = types.InlineKeyboardButton(
         '🛰 Фото дня от NASA (APOD)',
         callback_data='photo of the day'
     )
+    markup.add(but2)
     but3 = types.InlineKeyboardButton(
         '🪐 Справка о планетах',
         callback_data='planetary reference'
     )
+    markup.add(but3)
     but4 = types.InlineKeyboardButton(
         '📰 Новости космоса',
         callback_data='news'
     )
+    markup.add(but4)
     but5 = types.InlineKeyboardButton(
         '📍 Фото по координатам',
         callback_data='photo by coordinates'
     )
-
-    # Добавляем кнопки в клавиатуру
-    markup.add(but1, but2, but3, but4, but5)
+    markup.add(but5)
 
     # Отправляем сообщение с клавиатурой
     bot.send_message(
