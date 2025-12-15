@@ -46,7 +46,8 @@ def start(message):
     bot.send_message(
         message.chat.id,
         f'Здравствуйте, {message.from_user.first_name}.'
-        f' Чтобы Вы хотели узнать?',
+        f' 🚀 Я - бот о космосе! '
+        f'Чтобы Вы хотели узнать?',
         reply_markup=markup
     )
 
