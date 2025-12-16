@@ -1,88 +1,114 @@
-import telebot # Библиотека для работы с Telegram API
-from telebot import types # Импорт библиотеки, которая содержит классы для создания элементов интерфейса
+# Подключение библиотек
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.filters import Command
+from aiogram.types import BotCommand
 
 
 # Уникальный токен бота
-token = '8281293402:AAENBSRFr_R_rasXd0ifq2sHpnYFLNFMiHs'
-
-bot = telebot.TeleBot(token)
+TOKEN = '8281293402:AAENBSRFr_R_rasXd0ifq2sHpnYFLNFMiHs'
 
 
-# Декоратор, который привязывает следующую функцию к обработке команды /start
-@bot.message_handler(commands=['start'])
-def start(message):
+# Создаём бота и диспетчер
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+
+# Команды в Telegram
+async def set_commands(bot: Bot):
+    commands = [
+        BotCommand(command="start", description="Запустить бота"),
+        BotCommand(command="help", description="Показать все команды"),
+    ]
+    await bot.set_my_commands(commands)
+
+
+# Команда /start
+@dp.message(Command("start"))
+async def start(message: types.Message):
 
     # Создаем inline-клавиатуру
-    markup = types.InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text='🌍 Фото Земли со спутников',
+                callback_data='photo of the Earth'
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='🛰 Фото дня от NASA (APOD)',
+                callback_data='photo of the day'
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='🪐 Справка о планетах',
+                callback_data='planetary reference'
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='📰 Новости космоса',
+                callback_data='news'
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text='📍 Фото по координатам',
+                callback_data='photo by coordinates'
+            )
+        ]
+    ])
 
-    # Создаем кнопки и добавляем
-    but1 = types.InlineKeyboardButton(
-        '🌍 Фото Земли со спутников',
-        callback_data='photo of the Earth'
-    )
-    markup.add(but1)
-    but2 = types.InlineKeyboardButton(
-        '🛰 Фото дня от NASA (APOD)',
-        callback_data='photo of the day'
-    )
-    markup.add(but2)
-    but3 = types.InlineKeyboardButton(
-        '🪐 Справка о планетах',
-        callback_data='planetary reference'
-    )
-    markup.add(but3)
-    but4 = types.InlineKeyboardButton(
-        '📰 Новости космоса',
-        callback_data='news'
-    )
-    markup.add(but4)
-    but5 = types.InlineKeyboardButton(
-        '📍 Фото по координатам',
-        callback_data='photo by coordinates'
-    )
-    markup.add(but5)
-
-    # Отправляем сообщение с клавиатурой
-    bot.send_message(
-        message.chat.id,
-        f'Здравствуйте, {message.from_user.first_name}.'
-        f' 🚀 Я - бот о космосе! '
+    await message.answer(
+        f'Здравствуйте, {message.from_user.first_name}. 🚀 '
+        f'Я — бот о космосе! '
         f'Чтобы Вы хотели узнать?',
         reply_markup=markup
     )
 
 
-# Декоратор без параметров - будет обрабатывать любые сообщения
-@bot.message_handler()
-def non_mes(message):
-    bot.send_message(message.chat.id, 'Команда не найдена')
+# Любые другие сообщения
+@dp.message()
+async def non_mes(message: types.Message):
+    await message.answer('Команда не найдена')
 
 
-# Декоратор для обработки нажатий на кнопки, которые под сообщением бота
-@bot.callback_query_handler(func=lambda callback: True)
-def callback_message(callback):
+# Обработка inline-кнопок
+@dp.callback_query()
+async def callback_message(callback: types.CallbackQuery):
+
     if callback.data in (
-            'photo of the Earth',
-            'photo of the day',
-            'planetary reference',
-            'news', 'photo by coordinates'
+        'photo of the Earth',
+        'photo of the day',
+        'planetary reference',
+        'news',
+        'photo by coordinates'
     ):
-        # Создаем новую клавиатуру с одной кнопкой
-        markup = types.InlineKeyboardMarkup()
-        but1 = types.InlineKeyboardButton(
-            'Ок', callback_data='test'
-        )
-        markup.add(but1)
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text='Ок',
+                    callback_data='test'
+                )
+            ]
+        ])
 
-        # Редактируем существующее сообщение
-        bot.edit_message_text(
+        await callback.message.edit_text(
             'Функция работает',
-            callback.message.chat.id,
-            callback.message.message_id,
             reply_markup=markup
         )
 
+        await callback.answer()
+
 
 # Запуск бота
-if __name__ == '__main__':
-    bot.polling(non_stop=True)
+async def main():
+    await set_commands(bot)
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
