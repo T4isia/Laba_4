@@ -122,19 +122,34 @@ async def coords_cmd(message: types.Message):
 async def callback_message(callback: types.CallbackQuery):
 
     if callback.data == 'photo of the earth':
-        await callback.message.answer("🌍 Здесь будет фото Земли со спутников")
+        await callback.message.answer(
+            "🌍 Здесь будет фото Земли со спутников",
+            reply_markup = get_menu()
+            )
 
     elif callback.data == 'photo of the day':
-        await callback.message.answer("🛰 Здесь будет фото дня от NASA")
+        await callback.message.answer(
+            "🛰 Здесь будет фото дня от NASA",
+            reply_markup=get_menu()
+        )
 
     elif callback.data == 'planetary reference':
-        await callback.message.answer("🪐 Здесь будет справка о планетах")
+        await callback.message.answer(
+            "🪐 Здесь будет справка о планетах",
+            reply_markup = get_menu()
+            )
 
     elif callback.data == 'news':
-        await callback.message.answer("📰 Здесь будут новости космоса")
+        await callback.message.answer(
+            "📰 Здесь будут новости космоса",
+            reply_markup = get_menu()
+            )
 
     elif callback.data == 'photo by coordinates':
-        await callback.message.answer("📍 Здесь будет фото по координатам")
+        await callback.message.answer(
+            "📍 Здесь будет фото по координатам",
+            reply_markup = get_menu()
+            )
 
     await callback.answer()
 
