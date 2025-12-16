@@ -29,12 +29,9 @@ async def set_commands(bot: Bot):
     await bot.set_my_commands(commands)
 
 
-# Команда /start
-@dp.message(Command("start"))
-async def start(message: types.Message):
-
-    # Создаем inline-клавиатуру
-    markup = InlineKeyboardMarkup(inline_keyboard=[
+# Функция меню
+def get_menu():
+    return InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
                 text='/earth_photo - 🌍 Фото Земли со спутников',
@@ -67,37 +64,57 @@ async def start(message: types.Message):
         ]
     ])
 
+# Команда /start
+@dp.message(Command("start"))
+async def start(message: types.Message):
     await message.answer(
         f'Здравствуйте, {message.from_user.first_name}. 🚀 '
         f'Я — бот о космосе! '
         f'Чтобы Вы хотели узнать?',
-        reply_markup=markup
+        reply_markup=get_menu()
     )
+
+# Команда /help
+@dp.message(Command("help"))
+async def help(message: types.Message):
+    await message.answer("Команды:",
+                         reply_markup = get_menu()
+                         )
 
 # Команда /earth_photo
 @dp.message(Command("earth_photo"))
 async def earth_photo_cmd(message: types.Message):
-    await message.answer("🌍 Здесь будет фото Земли со спутников")
+    await message.answer("🌍 Здесь будет фото Земли со спутников",
+                         reply_markup = get_menu()
+                         )
 
 # Команда /apod
 @dp.message(Command("apod"))
 async def apod_cmd(message: types.Message):
-    await message.answer("🛰 Здесь будет фото дня от NASA")
+    await message.answer("🛰 Здесь будет фото дня от NASA",
+                         reply_markup = get_menu()
+                         )
 
 # Команда /planets
 @dp.message(Command("planets"))
 async def planets_cmd(message: types.Message):
-    await message.answer("🪐 Здесь будет справка о планетах")
+    await message.answer("🪐 Здесь будет справка о планетах",
+                         reply_markup = get_menu()
+                         )
 
 # Команда /news
 @dp.message(Command("news"))
 async def news_cmd(message: types.Message):
-    await message.answer("📰 Здесь будут новости космоса")
+    await message.answer("📰 Здесь будут новости космоса",
+                         reply_markup = get_menu()
+                         )
 
 # Команда /coords
 @dp.message(Command("coords"))
 async def coords_cmd(message: types.Message):
-    await message.answer("📍 Здесь будет фото по координатам")
+    await message.answer("📍 Здесь будет фото по координатам",
+                         reply_markup = get_menu()
+                         )
 
 
 # Обработка inline-кнопок
