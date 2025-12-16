@@ -24,7 +24,6 @@ async def set_commands(bot: Bot):
         BotCommand(command="apod", description="🛰 Фото дня от NASA (APOD)"),
         BotCommand(command="planets", description="🪐 Справка о планетах"),
         BotCommand(command="news", description="📰 Новости космоса"),
-        BotCommand(command="coords", description="📍 Фото по координатам"),
     ]
     await bot.set_my_commands(commands)
 
@@ -34,34 +33,28 @@ def get_menu():
     return InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
-                text='/earth_photo - 🌍 Фото Земли со спутников',
+                text='1 или /earth_photo - 🌍 Фото Земли со спутников',
                 callback_data='photo of the earth'
             )
         ],
         [
             InlineKeyboardButton(
-                text='/apod - 🛰 Фото дня от NASA (APOD)',
+                text='2 или /apod - 🛰 Фото дня от NASA (APOD)',
                 callback_data='photo of the day'
             )
         ],
         [
             InlineKeyboardButton(
-                text='/planets - 🪐 Справка о планетах',
+                text='3 или /planets - 🪐 Справка о планетах',
                 callback_data='planetary reference'
             )
         ],
         [
             InlineKeyboardButton(
-                text='/news - 📰 Новости космоса',
+                text='4 или /news - 📰 Новости космоса',
                 callback_data='news'
             )
         ],
-        [
-            InlineKeyboardButton(
-                text='/coords - 📍 Фото по координатам',
-                callback_data='photo by coordinates'
-            )
-        ]
     ])
 
 # Команда /start
@@ -84,16 +77,20 @@ async def help(message: types.Message):
 # Команда /earth_photo
 @dp.message(Command("earth_photo"))
 async def earth_photo_cmd(message: types.Message):
-    await message.answer("🌍 Здесь будет фото Земли со спутников",
-                         reply_markup = get_menu()
-                         )
+    await message.answer_photo(
+        photo="https://resizer.mail.ru/p/a5db777f-57b6-56e2-a846-d28cb6add0f6/AQAKteqhd-KlJvH2QU-3mpvdd3E7LxmwXM0D8EpkGCZneW5xzAc7o3VbjvJgZQ_EcTfXrE0-3nFfEEon70v5Bwaf5DM.jpg",
+        caption="🌍 Это Земля из Космоса",
+        reply_markup=get_menu()
+    )
 
 # Команда /apod
 @dp.message(Command("apod"))
 async def apod_cmd(message: types.Message):
-    await message.answer("🛰 Здесь будет фото дня от NASA",
-                         reply_markup = get_menu()
-                         )
+    await message.answer_photo(
+        photo="https://apod.nasa.gov/apod/image/2508/Crab_HubbleChandraSpitzer_3600.jpg",
+        caption="🛰 Здесь будет фото дня от NASA",
+        reply_markup = get_menu()
+        )
 
 # Команда /planets
 @dp.message(Command("planets"))
@@ -109,27 +106,22 @@ async def news_cmd(message: types.Message):
                          reply_markup = get_menu()
                          )
 
-# Команда /coords
-@dp.message(Command("coords"))
-async def coords_cmd(message: types.Message):
-    await message.answer("📍 Здесь будет фото по координатам",
-                         reply_markup = get_menu()
-                         )
-
 
 # Обработка inline-кнопок
 @dp.callback_query()
 async def callback_message(callback: types.CallbackQuery):
 
     if callback.data == 'photo of the earth':
-        await callback.message.answer(
-            "🌍 Здесь будет фото Земли со спутников",
+        await callback.message.answer_photo(
+            photo="https://resizer.mail.ru/p/a5db777f-57b6-56e2-a846-d28cb6add0f6/AQAKteqhd-KlJvH2QU-3mpvdd3E7LxmwXM0D8EpkGCZneW5xzAc7o3VbjvJgZQ_EcTfXrE0-3nFfEEon70v5Bwaf5DM.jpg",
+            caption="🌍 Это Земля из Космоса",
             reply_markup = get_menu()
             )
 
     elif callback.data == 'photo of the day':
-        await callback.message.answer(
-            "🛰 Здесь будет фото дня от NASA",
+        await callback.message.answer_photo(
+            photo="https://apod.nasa.gov/apod/image/2508/Crab_HubbleChandraSpitzer_3600.jpg",
+             caption="🛰 Здесь будет фото дня от NASA",
             reply_markup=get_menu()
         )
 
@@ -145,19 +137,39 @@ async def callback_message(callback: types.CallbackQuery):
             reply_markup = get_menu()
             )
 
-    elif callback.data == 'photo by coordinates':
-        await callback.message.answer(
-            "📍 Здесь будет фото по координатам",
-            reply_markup = get_menu()
-            )
-
     await callback.answer()
 
 
-# Любые другие сообщения
+# Пользовательский ввод и обработка исключений
 @dp.message()
-async def non_mes(message: types.Message):
-    await message.answer('Команда не найдена')
+async def text_commands(message: types.Message):
+    text = message.text.strip()
+
+    if text == "1":
+        await message.answer_photo(
+            photo="https://resizer.mail.ru/p/a5db777f-57b6-56e2-a846-d28cb6add0f6/AQAKteqhd-KlJvH2QU-3mpvdd3E7LxmwXM0D8EpkGCZneW5xzAc7o3VbjvJgZQ_EcTfXrE0-3nFfEEon70v5Bwaf5DM.jpg",
+            caption="🌍 Это Земля из Космоса",
+            reply_markup=get_menu()
+        )
+
+    elif text == "2":
+        await message.answer_photo(
+            photo="https://apod.nasa.gov/apod/image/2508/Crab_HubbleChandraSpitzer_3600.jpg",
+            caption="🛰 Здесь будет фото дня от NASA",
+            reply_markup=get_menu()
+        )
+
+    elif text == "3":
+        await message.answer("🪐 Здесь будет справка о планетах", reply_markup=get_menu())
+
+    elif text == "4":
+        await message.answer("📰 Здесь будут новости космоса", reply_markup=get_menu())
+
+    else:
+        await message.answer(
+        'Команда не найдена',
+        reply_markup=get_menu()
+    )
 
 
 # Запуск бота
