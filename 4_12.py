@@ -20,6 +20,11 @@ async def set_commands(bot: Bot):
     commands = [
         BotCommand(command="start", description="Запустить бота"),
         BotCommand(command="help", description="Показать все команды"),
+        BotCommand(command="earth_photo", description="🌍 Фото Земли со спутников"),
+        BotCommand(command="apod", description="🛰 Фото дня от NASA (APOD)"),
+        BotCommand(command="planets", description="🪐 Справка о планетах"),
+        BotCommand(command="news", description="📰 Новости космоса"),
+        BotCommand(command="coords", description="📍 Фото по координатам"),
     ]
     await bot.set_my_commands(commands)
 
@@ -32,31 +37,31 @@ async def start(message: types.Message):
     markup = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
-                text='🌍 Фото Земли со спутников',
-                callback_data='photo of the Earth'
+                text='/earth_photo - 🌍 Фото Земли со спутников',
+                callback_data='photo of the earth'
             )
         ],
         [
             InlineKeyboardButton(
-                text='🛰 Фото дня от NASA (APOD)',
+                text='/apod - 🛰 Фото дня от NASA (APOD)',
                 callback_data='photo of the day'
             )
         ],
         [
             InlineKeyboardButton(
-                text='🪐 Справка о планетах',
+                text='/planets - 🪐 Справка о планетах',
                 callback_data='planetary reference'
             )
         ],
         [
             InlineKeyboardButton(
-                text='📰 Новости космоса',
+                text='/news - 📰 Новости космоса',
                 callback_data='news'
             )
         ],
         [
             InlineKeyboardButton(
-                text='📍 Фото по координатам',
+                text='/coords - 📍 Фото по координатам',
                 callback_data='photo by coordinates'
             )
         ]
@@ -69,39 +74,58 @@ async def start(message: types.Message):
         reply_markup=markup
     )
 
+# Команда /earth_photo
+@dp.message(Command("earth_photo"))
+async def earth_photo_cmd(message: types.Message):
+    await message.answer("🌍 Здесь будет фото Земли со спутников")
 
-# Любые другие сообщения
-@dp.message()
-async def non_mes(message: types.Message):
-    await message.answer('Команда не найдена')
+# Команда /apod
+@dp.message(Command("apod"))
+async def apod_cmd(message: types.Message):
+    await message.answer("🛰 Здесь будет фото дня от NASA")
+
+# Команда /planets
+@dp.message(Command("planets"))
+async def planets_cmd(message: types.Message):
+    await message.answer("🪐 Здесь будет справка о планетах")
+
+# Команда /news
+@dp.message(Command("news"))
+async def news_cmd(message: types.Message):
+    await message.answer("📰 Здесь будут новости космоса")
+
+# Команда /coords
+@dp.message(Command("coords"))
+async def coords_cmd(message: types.Message):
+    await message.answer("📍 Здесь будет фото по координатам")
 
 
 # Обработка inline-кнопок
 @dp.callback_query()
 async def callback_message(callback: types.CallbackQuery):
 
-    if callback.data in (
-        'photo of the Earth',
-        'photo of the day',
-        'planetary reference',
-        'news',
-        'photo by coordinates'
-    ):
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text='Ок',
-                    callback_data='test'
-                )
-            ]
-        ])
+    if callback.data == 'photo of the earth':
+        await callback.message.answer("🌍 Здесь будет фото Земли со спутников")
 
-        await callback.message.edit_text(
-            'Функция работает',
-            reply_markup=markup
-        )
+    elif callback.data == 'photo of the day':
+        await callback.message.answer("🛰 Здесь будет фото дня от NASA")
 
-        await callback.answer()
+    elif callback.data == 'planetary reference':
+        await callback.message.answer("🪐 Здесь будет справка о планетах")
+
+    elif callback.data == 'news':
+        await callback.message.answer("📰 Здесь будут новости космоса")
+
+    elif callback.data == 'photo by coordinates':
+        await callback.message.answer("📍 Здесь будет фото по координатам")
+
+    await callback.answer()
+
+
+# Любые другие сообщения
+@dp.message()
+async def non_mes(message: types.Message):
+    await message.answer('Команда не найдена')
 
 
 # Запуск бота
