@@ -1,5 +1,6 @@
 # Подключение библиотек
 import pandas as pd
+from matplotlib import pyplot as plt
 
 # Загргузка данных
 data = pd.read_csv("Titanic_modified.csv")
@@ -45,6 +46,13 @@ data['Age'].fillna(data['Age'].median(), inplace=True)
 print("         📊Подготовенный датасет📊")
 print(data)
 
-
-
+# Гистограмма цен с помощью библиотеки matplotlib
+print("==============================================")
+print("              Визуализация цен")
+plt.figure(figsize=(10, 6))
+plt.hist(data['Fare'], bins=30)
+plt.title('Распределение цен')
+plt.xlabel('Цена')
+plt.ylabel('Номер пассажира')
+plt.show()
 
